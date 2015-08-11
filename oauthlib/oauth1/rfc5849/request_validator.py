@@ -821,3 +821,17 @@ class RequestValidator(object):
         * AuthorizationEndpoint
         """
         raise NotImplementedError("Subclasses must implement this function.")
+
+    def create_access_token_existing(self, request, credentials):
+        """
+        :param request: An oauthlib.common.Request object.
+        
+        returns `None`
+                or 
+                {
+                    'oauth_token': existing_token.oauth_token,
+                    'oauth_token_secret': existing_token.oauth_token_secret,
+                    'oauth_authorized_realms': ' '.join(existing_token.realms)
+                }
+        """
+        raise NotImplementedError("Subclasses must implement this function.")

@@ -51,9 +51,25 @@ class AccessTokenEndpoint(BaseEndpoint):
         token.update(credentials)
         self.request_validator.save_access_token(token, request)
         return urlencode(token.items())
+    
+    def create_access_token_existing(self, request, credentials):
+        """Loads and updates an access token if possible.
+
+        :param request: An oauthlib.common.Request object.
+        :returns: The token as an urlencoded string.
+        """
+        request.realms = self.request_validator.get_realms(
+            request.resource_owner_key, request)
+        existing_token = self.request_validator.create_access_token_existing(request, credentials)
+        if not existing_token:
+            return None
+        # the existing_token object just needs to be a dict with the keys: ``oauth_token``, ``oauth_token_secret`` and ``realms``
+        existing_token.update(credentials)
+        return urlencode(existing_token.items())
+
 
     def create_access_token_response(self, uri, http_method='GET', body=None,
-                                     headers=None, credentials=None):
+                                     headers=None, credentials=None, update_access_token=None):
         """Create an access token response, with a new request token if valid.
 
         :param uri: The full URI of the token request.
@@ -61,6 +77,7 @@ class AccessTokenEndpoint(BaseEndpoint):
         :param body: The request body as a string.
         :param headers: The request headers as a dict.
         :param credentials: A list of extra credentials to include in the token.
+        :param update_access_token: Boolean. Should a token be updated if it exists already.
         :returns: A tuple of 3 elements.
                   1. A dict of headers to set on the response.
                   2. The response body as a string.
@@ -106,7 +123,11 @@ class AccessTokenEndpoint(BaseEndpoint):
             valid, processed_request = self.validate_access_token_request(
                 request)
             if valid:
-                token = self.create_access_token(request, credentials or {})
+                token = None
+                if update_access_token:
+                    token = self.create_access_token_existing(request, credentials or {})
+                if not token:
+                    token = self.create_access_token(request, credentials or {})
                 self.request_validator.invalidate_request_token(
                     request.client_key,
                     request.resource_owner_key,
