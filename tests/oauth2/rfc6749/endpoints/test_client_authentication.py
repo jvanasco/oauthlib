@@ -23,7 +23,8 @@ from oauthlib.oauth2 import LegacyApplicationServer, BackendApplicationServer
 
 class ClientAuthenticationTest(TestCase):
 
-    def inspect_client(self, request, refresh_token=False):
+    def inspect_client(self, request, refresh_token=False, context=None):
+        # `context` is used for token generation
         if not request.client or not request.client.client_id:
             raise ValueError()
         return 'abc'

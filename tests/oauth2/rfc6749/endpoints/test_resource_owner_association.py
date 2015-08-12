@@ -36,7 +36,8 @@ class ResourceOwnerAssociationTest(TestCase):
         request.client.client_id = 'mocked'
         return True
 
-    def inspect_client(self, request, refresh_token=False):
+    def inspect_client(self, request, refresh_token=False, context=None):
+        # `context` is used for token generation
         if not request.user:
             raise ValueError()
         return 'abc'

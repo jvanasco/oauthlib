@@ -40,7 +40,7 @@ class AuthorizationEndpointTest(TestCase):
                 default_token_type=token,
                 response_types=response_types)
 
-    @mock.patch('oauthlib.common.generate_token', new=lambda: 'abc')
+    @mock.patch('oauthlib.common.generate_token', new=lambda **kw: 'abc')
     def test_authorization_grant(self):
         uri = 'http://i.b/l?response_type=code&client_id=me&scope=all+of+them&state=xyz'
         uri += '&redirect_uri=http%3A%2F%2Fback.to%2Fme'
@@ -49,7 +49,7 @@ class AuthorizationEndpointTest(TestCase):
         self.assertIn('Location', headers)
         self.assertURLEqual(headers['Location'], 'http://back.to/me?code=abc&state=xyz')
 
-    @mock.patch('oauthlib.common.generate_token', new=lambda: 'abc')
+    @mock.patch('oauthlib.common.generate_token', new=lambda **kw: 'abc')
     def test_implicit_grant(self):
         uri = 'http://i.b/l?response_type=token&client_id=me&scope=all+of+them&state=xyz'
         uri += '&redirect_uri=http%3A%2F%2Fback.to%2Fme'
@@ -108,7 +108,7 @@ class TokenEndpointTest(TestCase):
         self.endpoint = TokenEndpoint('authorization_code',
                 default_token_type=token, grant_types=supported_types)
 
-    @mock.patch('oauthlib.common.generate_token', new=lambda: 'abc')
+    @mock.patch('oauthlib.common.generate_token', new=lambda **kw: 'abc')
     def test_authorization_grant(self):
         body = 'grant_type=authorization_code&code=abc&scope=all+of+them&state=xyz'
         headers, body, status_code = self.endpoint.create_token_response(
@@ -122,7 +122,7 @@ class TokenEndpointTest(TestCase):
         }
         self.assertEqual(json.loads(body), token)
 
-    @mock.patch('oauthlib.common.generate_token', new=lambda: 'abc')
+    @mock.patch('oauthlib.common.generate_token', new=lambda **kw: 'abc')
     def test_password_grant(self):
         body = 'grant_type=password&username=a&password=hello&scope=all+of+them'
         headers, body, status_code = self.endpoint.create_token_response(
@@ -136,7 +136,7 @@ class TokenEndpointTest(TestCase):
         }
         self.assertEqual(json.loads(body), token)
 
-    @mock.patch('oauthlib.common.generate_token', new=lambda: 'abc')
+    @mock.patch('oauthlib.common.generate_token', new=lambda **kw: 'abc')
     def test_client_grant(self):
         body = 'grant_type=client_credentials&scope=all+of+them'
         headers, body, status_code = self.endpoint.create_token_response(
@@ -227,7 +227,7 @@ twIDAQAB
             refresh_token_generator=tokens.random_token_generator
         )
 
-    @mock.patch('oauthlib.common.generate_token', new=lambda: 'abc')
+    @mock.patch('oauthlib.common.generate_token', new=lambda **kw: 'abc')
     def test_authorization_grant(self):
         body = 'grant_type=authorization_code&code=abc&scope=all+of+them&state=xyz'
         headers, body, status_code = self.endpoint.create_token_response(
@@ -242,7 +242,7 @@ twIDAQAB
         }
         self.assertEqual(body, token)
 
-    @mock.patch('oauthlib.common.generate_token', new=lambda: 'abc')
+    @mock.patch('oauthlib.common.generate_token', new=lambda **kw: 'abc')
     def test_password_grant(self):
         body = 'grant_type=password&username=a&password=hello&scope=all+of+them'
         headers, body, status_code = self.endpoint.create_token_response(
@@ -257,7 +257,7 @@ twIDAQAB
         }
         self.assertEqual(body, token)
 
-    @mock.patch('oauthlib.common.generate_token', new=lambda: 'abc')
+    @mock.patch('oauthlib.common.generate_token', new=lambda **kw: 'abc')
     def test_scopes_and_user_id_stored_in_access_token(self):
         body = 'grant_type=password&username=a&password=hello&scope=all+of+them'
         headers, body, status_code = self.endpoint.create_token_response(
@@ -270,7 +270,7 @@ twIDAQAB
         self.assertEqual(claims['scope'], 'all of them')
         self.assertEqual(claims['user_id'], 123)
 
-    @mock.patch('oauthlib.common.generate_token', new=lambda: 'abc')
+    @mock.patch('oauthlib.common.generate_token', new=lambda **kw: 'abc')
     def test_client_grant(self):
         body = 'grant_type=client_credentials&scope=all+of+them'
         headers, body, status_code = self.endpoint.create_token_response(

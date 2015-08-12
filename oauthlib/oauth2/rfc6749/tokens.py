@@ -207,12 +207,15 @@ def prepare_bearer_body(token, body=''):
     return add_params_to_qs(body, [(('access_token', token))])
 
 
-def random_token_generator(request, refresh_token=False):
-    return common.generate_token(context='random_token_generator')
+def random_token_generator(request, refresh_token=False, context='random_token_generator'):
+    return common.generate_token(context=context)
 
 
 def signed_token_generator(private_pem, **kwargs):
-    def signed_token_generator(request):
+    context = 'signed_token_generator'
+    if 'context' in kwargs:
+        context = kwargs['context']    
+    def signed_token_generator(request, context=context):
         request.claims = kwargs
         return common.generate_signed_token(private_pem, request)
 
@@ -251,7 +254,7 @@ class BearerToken(TokenBase):
             expires_in = self.expires_in
 
         request.expires_in = expires_in
-
+        
         token = {
             'access_token': self.token_generator(request, context='BearerToken-access_token'),
             'expires_in': expires_in,
