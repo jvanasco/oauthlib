@@ -39,8 +39,8 @@ class RequestTokenEndpoint(BaseEndpoint):
         :returns: The token as an urlencoded string.
         """
         token = {
-            'oauth_token': self.token_generator(),
-            'oauth_token_secret': self.token_generator(),
+            'oauth_token': self.token_generator(context='rfc5849-request_token'),
+            'oauth_token_secret': self.token_generator(context='rfc5849-request_token_secret'),
             'oauth_callback_confirmed': 'true'
         }
         token.update(credentials)

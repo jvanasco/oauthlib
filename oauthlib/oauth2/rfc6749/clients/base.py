@@ -225,7 +225,7 @@ class Client(object):
         if not is_secure_transport(authorization_url):
             raise InsecureTransportError()
 
-        self.state = state or self.state_generator()
+        self.state = state or self.state_generator(context='rfc6749-prepare_authorization_request')
         self.redirect_url = redirect_url or self.redirect_url
         self.scope = scope or self.scope
         auth_url = self.prepare_request_uri(

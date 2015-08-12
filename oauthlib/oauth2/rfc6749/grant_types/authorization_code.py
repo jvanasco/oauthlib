@@ -100,7 +100,7 @@ class AuthorizationCodeGrant(GrantTypeBase):
 
     def create_authorization_code(self, request):
         """Generates an authorization grant represented as a dictionary."""
-        grant = {'code': common.generate_token()}
+        grant = {'code': common.generate_token(context='rfc6749-authorization_code')}
         if hasattr(request, 'state') and request.state:
             grant['state'] = request.state
         log.debug('Created authorization code grant %r for request %r.',

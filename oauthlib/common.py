@@ -217,13 +217,34 @@ def generate_timestamp():
     return unicode_type(int(time.time()))
 
 
-def generate_token(length=30, chars=UNICODE_ASCII_CHARACTER_SET):
+def generate_token(length=30, chars=UNICODE_ASCII_CHARACTER_SET, context=None):
     """Generates a non-guessable OAuth token
 
     OAuth (1 and 2) does not specify the format of tokens except that they
     should be strings of random characters. Tokens should not be guessable
     and entropy when generating the random characters is important. Which is
     why SystemRandom is used instead of the default random.choice method.
+    
+    A `context` argument is provided for custom implementations.
+    
+    expected `context` values:
+
+    oauth-1
+    * rfc5849-access_token
+    * rfc5849-access_token_secret
+    * rfc5849-request_token
+    * rfc5849-request_token_secret
+    * rfc5849-verifier
+
+    oauth-2
+    * rfc6749-authorization_code
+    * rfc6749-prepare_authorization_request
+    * oauth2-generate_client_id
+    * BearerToken-access_token
+    * BearerToken-refresh_token
+
+    utils
+    * random_token_generator
     """
     rand = random.SystemRandom()
     return ''.join(rand.choice(chars) for x in range(length))
@@ -259,7 +280,7 @@ def generate_client_id(length=30, chars=CLIENT_ID_CHARACTER_SET):
     OAuth 2 specify the format of client_id in
     http://tools.ietf.org/html/rfc6749#appendix-A.
     """
-    return generate_token(length, chars)
+    return generate_token(length, chars, context='oauth2-generate_client_id')
 
 
 def add_params_to_qs(query, params):

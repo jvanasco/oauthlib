@@ -47,7 +47,7 @@ class AuthorizationEndpoint(BaseEndpoint):
         """
         verifier = {
             'oauth_token': request.resource_owner_key,
-            'oauth_verifier': self.token_generator(),
+            'oauth_verifier': self.token_generator(context='rfc5849-verifier'),
         }
         verifier.update(credentials)
         self.request_validator.save_verifier(

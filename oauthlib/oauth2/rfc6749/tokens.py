@@ -208,7 +208,7 @@ def prepare_bearer_body(token, body=''):
 
 
 def random_token_generator(request, refresh_token=False):
-    return common.generate_token()
+    return common.generate_token(context='random_token_generator')
 
 
 def signed_token_generator(private_pem, **kwargs):
@@ -253,7 +253,7 @@ class BearerToken(TokenBase):
         request.expires_in = expires_in
 
         token = {
-            'access_token': self.token_generator(request),
+            'access_token': self.token_generator(request, context='BearerToken-access_token'),
             'expires_in': expires_in,
             'token_type': 'Bearer',
         }
@@ -269,7 +269,7 @@ class BearerToken(TokenBase):
                     not self.request_validator.rotate_refresh_token(request)):
                 token['refresh_token'] = request.refresh_token
             else:
-                token['refresh_token'] = self.refresh_token_generator(request)
+                token['refresh_token'] = self.refresh_token_generator(request, context='BearerToken-refresh_token')
 
         token.update(request.extra_credentials or {})
         token = OAuth2Token(token)

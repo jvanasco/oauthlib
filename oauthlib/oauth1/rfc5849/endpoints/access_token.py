@@ -43,8 +43,8 @@ class AccessTokenEndpoint(BaseEndpoint):
         request.realms = self.request_validator.get_realms(
             request.resource_owner_key, request)
         token = {
-            'oauth_token': self.token_generator(),
-            'oauth_token_secret': self.token_generator(),
+            'oauth_token': self.token_generator(context='rfc5849-access_token'),
+            'oauth_token_secret': self.token_generator(context='rfc5849-access_token_secret'),
             # Backport the authorized scopes indication used in OAuth2
             'oauth_authorized_realms': ' '.join(request.realms)
         }
